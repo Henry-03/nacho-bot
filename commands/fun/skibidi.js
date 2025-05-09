@@ -5,6 +5,7 @@ module.exports = {
 		.setName('skibidi')
 		.setDescription('skibidi toilet'),
 	async execute(interaction) {
+		console.log('what the sigma');
 		await interaction.reply('what the sigma');
 	},
 };
