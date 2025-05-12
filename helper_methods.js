@@ -1,11 +1,10 @@
-const Op = require('sequelize');
-const { Collection } = require('discord.js');
 const { Users } = require('./dbObjects.js');
-const currency = new Collection();
 
 module.exports = {
 	addBalance: async function(id, amount) {
-		const user = currency.get(id);
+		const user = await Users.findOne({
+			where: { user_id: id },
+		});
 	
 		if (user) {
 			user.balance += Number(amount);
@@ -13,13 +12,15 @@ module.exports = {
 		}
 	
 		const newUser = await Users.create({ user_id: id, balance: amount });
-		currency.set(id, newUser);
+		// currency.set(id, newUser);
 	
 		return newUser;
 	},
 	
-	getBalance: function(id) {
-		const user = currency.get(id);
+	getBalance: async function(id) {
+		const user = await Users.findOne({
+			where: { user_id: id },
+		});
 		return user ? user.balance : 0;
 	}
 }

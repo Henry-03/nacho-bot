@@ -5,7 +5,11 @@ const fs = require('node:fs');
 const path = require('node:path');
 const helperMethods = require('./helper_methods.js');
 
-const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages] });
+const client = new Client({ intents: [
+	GatewayIntentBits.Guilds, 
+	GatewayIntentBits.GuildMessages, 
+	GatewayIntentBits.MessageContent]
+});
 
 client.login(token);
 
@@ -41,8 +45,3 @@ for (const file of eventFiles) {
 		client.on(event.name, (...args) => event.execute(...args));
 	}
 }
-
-client.on(Events.MessageCreate, async message => {
-	if (message.author.bot) return;
-	helperMethods.addBalance(message.author.id, 1);
-});

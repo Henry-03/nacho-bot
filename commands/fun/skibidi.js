@@ -3,9 +3,18 @@ const { SlashCommandBuilder } = require('discord.js');
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('skibidi')
-		.setDescription('skibidi toilet'),
+		.setDescription('skibidi toilet')
+		.addBooleanOption(option =>
+			option
+				.setName('how')
+				.setDescription('are you sigma')
+		),
 	async execute(interaction) {
-		console.log('what the sigma');
-		await interaction.reply('what the sigma');
+		const how = interaction.options.getBoolean('how');
+		if (how) {
+			await interaction.reply('oiiaioiiiai');
+		} else {
+			await interaction.reply('what the sigma');
+		}
 	},
 };
