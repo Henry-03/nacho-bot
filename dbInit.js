@@ -7,20 +7,22 @@ const sequelize = new Sequelize('database', 'username', 'password', {
 	storage: 'database.sqlite',
 });
 
-const CurrencyShop = require('./models/currency_shop.js')(sequelize, Sequelize.DataTypes);
+const CommandList = require('./models/commands.js')(sequelize, Sequelize.DataTypes);
 require('./models/users.js')(sequelize, Sequelize.DataTypes);
-require('./models/user_items.js')(sequelize, Sequelize.DataTypes);
+require('./models/user_cd.js')(sequelize, Sequelize.DataTypes);
 
 const force = process.argv.includes('--force') || process.argv.includes('-f');
 
 sequelize.sync({ force }).then(async () => {
-	const shop = [
-		CurrencyShop.upsert({ name: 'Tea', cost: 1 }),
-		CurrencyShop.upsert({ name: 'Coffee', cost: 2 }),
-		CurrencyShop.upsert({ name: 'Cake', cost: 5 }),
+	const commands = [
+		CommandList.upsert({ name: 'hunt', time: 1 }),
+		CommandList.upsert({ name: 'adventure', time: 60 }),
+		CommandList.upsert({ name: 'training', time: 15 }),
+		CommandList.upsert({ name: 'working', time: 5 }),
+		CommandList.upsert({ name: 'farm', time: 10 }),
 	];
 
-	await Promise.all(shop);
+	await Promise.all(commands);
 	console.log('Database synced');
 
 	sequelize.close();

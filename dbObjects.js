@@ -8,33 +8,34 @@ const sequelize = new Sequelize('database', 'username', 'password', {
 });
 
 const Users = require('./models/users.js')(sequelize, Sequelize.DataTypes);
-const CurrencyShop = require('./models/currency_shop.js')(sequelize, Sequelize.DataTypes);
-const UserItems = require('./models/user_items.js')(sequelize, Sequelize.DataTypes);
+const Commands = require('./models/commands.js')(sequelize, Sequelize.DataTypes);
+const UserCds = require('./models/user_cd.js')(sequelize, Sequelize.DataTypes);
 
-UserItems.belongsTo(CurrencyShop, { foreignKey: 'item_id', as: 'item' });
+UserCds.belongsTo(Commands, { foreignKey: 'command_id', as: 'command' });
 
-Reflect.defineProperty(Users.prototype, 'addItem', {
-	value: async (item, addAmount, id) => {
-		const userItem = await UserItems.findOne({
-			where: { user_id: id, item_id: item.id },
+Reflect.defineProperty(Users.prototype, 'toggleCooldown', {
+	value: async (id, command) => {
+		const userCd = await UserCds.findOne({
+			where: { user_id: id, command_id: command.id },
 		});
 
-		if (userItem) {
-			userItem.amount += addAmount;
-			return userItem.save();
+		if (userCd) {
+			userCd.on_cooldown = !userCd.on_cooldown;
+			return userCds.save();
 		}
 
-		return UserItems.create({ user_id: id, item_id: item.id, amount: 1 });
+		// return UserItems.create({ user_id: id, item_id: item.id, amount: 1 });
+		return;
 	},
 });
 
-Reflect.defineProperty(Users.prototype, 'getItems', {
+Reflect.defineProperty(Users.prototype, 'getCooldowns', {
 	value: id => {
-		return UserItems.findAll({
+		return UserCds.findAll({
 			where: { user_id: id },
-			include: ['item'],
+			include: ['command'],
 		});
 	},
 });
 
-module.exports = { Users, CurrencyShop, UserItems };
+module.exports = { Users, Commands, UserCds };

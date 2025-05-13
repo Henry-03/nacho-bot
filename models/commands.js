@@ -1,13 +1,15 @@
+const { time } = require("discord.js");
+
 module.exports = (sequelize, DataTypes) => {
-	return sequelize.define('currency_shop', {
+	return sequelize.define('commands', {
 		name: {
 			type: DataTypes.STRING,
 			unique: true,
 		},
-		cost: {
+		time: {
 			type: DataTypes.INTEGER,
 			allowNull: false,
-		},
+		}
 	}, {
 		timestamps: false,
 	});

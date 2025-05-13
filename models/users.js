@@ -4,11 +4,11 @@ module.exports = (sequelize, DataTypes) => {
 			type: DataTypes.STRING,
 			primaryKey: true,
 		},
-		balance: {
-			type: DataTypes.INTEGER,
-			defaultValue: 0,
-			allowNull: false,
-		},
+		is_reminding: {
+			type: DataTypes.BOOLEAN,
+			defaultValue: true
+			// Change back to false later
+		}
 	}, {
 		timestamps: false,
 	});
