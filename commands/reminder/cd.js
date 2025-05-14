@@ -7,6 +7,6 @@ module.exports = {
 		.setDescription('Display all commands'),
 	async execute(interaction) {
 		const commands = await Commands.findAll();
-	    return interaction.reply(codeBlock(commands.map(i => `${i.name}: ${i.time}s`).join('\n')));
+	    return interaction.reply(codeBlock(commands.map(i => `${i.name.split(" ")[0]}: ${i.time}s`).join('\n')));
 	},
 };

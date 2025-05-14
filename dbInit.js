@@ -16,9 +16,9 @@ const force = process.argv.includes('--force') || process.argv.includes('-f');
 sequelize.sync({ force }).then(async () => {
 	const commands = [
 		CommandList.upsert({ name: 'hunt', time: 1 }),
-		CommandList.upsert({ name: 'adventure', time: 60 }),
-		CommandList.upsert({ name: 'training', time: 15 }),
-		CommandList.upsert({ name: 'working', time: 5 }),
+		CommandList.upsert({ name: 'adventure adv', time: 60 }),
+		CommandList.upsert({ name: 'training tr ultraining ultr', time: 15 }),
+		CommandList.upsert({ name: 'working fish net boat bigboat chop axe bowsaw chainsaw mine pickaxe drill dynamite pickup ladder tractor greenhouse', time: 5 }),
 		CommandList.upsert({ name: 'farm', time: 10 }),
 	];
 
