@@ -14,11 +14,21 @@ module.exports = {
         if (messageArr[0] == "rpg") {
             const commandList = await Commands.findAll({ attributes: ['name'], raw: true })
             var key = new String();
+            var commandName = new String();
             for (const names of commandList) {
                 console.log(names.name);
-                if (names.name.indexOf(messageArr[1]) > -1) {
-                    key = names.name;
-                    break;
+                if (names.name[0] != '*') {
+                    if (names.name.indexOf(messageArr[1]) > -1) {
+                        key = names.name;
+                        commandName = messageArr[1];
+                        break;
+                    }  
+                } else { // Commands marked with * must be exact match
+                    if (message.content.toLowerCase().slice(4, 3+names.name.length) == names.name.slice(1)) {
+                        key = names.name;
+                        commandName = key.slice(1);
+                        break;
+                    }
                 }
             }
             if (!key) return;
@@ -30,10 +40,10 @@ module.exports = {
                 {
                     user.toggleCooldown(id, command);  
                     setTimeout(() => {
-                        message.channel.send(`<@${id}>, \`${messageArr[1]}\` is ready`);
+                        message.channel.send(`<@${id}>, \`${commandName}\` is ready`);
                         user.toggleCooldown(id, command);
-                    }, command.time * 1000)     
-                } else message.channel.send(`<@${id}>, \`${messageArr[1]}\` is on cooldown`)
+                    }, command.time * 20)     
+                } else message.channel.send(`<@${id}>, \`${commandName}\` is on cooldown`)
             }
         }
     },
