@@ -11,7 +11,7 @@ const Users = require('./models/users.js')(sequelize, Sequelize.DataTypes);
 const Commands = require('./models/commands.js')(sequelize, Sequelize.DataTypes);
 const UserCds = require('./models/user_cd.js')(sequelize, Sequelize.DataTypes);
 
-UserCds.belongsTo(Commands, { foreignKey: 'command_id', as: 'command' });
+UserCds.belongsTo(Commands, { foreignKey: 'command_id', as: 'command'});
 
 Reflect.defineProperty(Users.prototype, 'toggleCooldown', {
 	value: async (id, command) => {
@@ -21,20 +21,18 @@ Reflect.defineProperty(Users.prototype, 'toggleCooldown', {
 
 		if (userCd) {
 			userCd.on_cooldown = !userCd.on_cooldown;
-			return userCds.save();
+			return userCd.save();
 		}
-
-		// return UserItems.create({ user_id: id, item_id: item.id, amount: 1 });
-		return;
 	},
 });
 
-Reflect.defineProperty(Users.prototype, 'getCooldowns', {
-	value: id => {
-		return UserCds.findAll({
-			where: { user_id: id },
-			include: ['command'],
-		});
+Reflect.defineProperty(Users.prototype, 'initCooldowns', {
+	value: async (id) => {
+		const commandList = await Commands.findAll();
+		for (const command of commandList) {
+			var userCd = await UserCds.create({ user_id: id, command_id: command.id});
+			await userCd.save();
+		}
 	},
 });
 

@@ -9,12 +9,14 @@ module.exports = {
 			option
 				.setName('toggle')
 				.setDescription('Toggles reminder')
+				.setRequired(true)
 		),
 	async execute(interaction) {
 		const toggle = interaction.options.getBoolean('toggle');
 		var user = await Users.findOne({ where: { user_id: interaction.user.id }, })
 		if (!user) {
 			user = await Users.create({ user_id: interaction.user.id });
+			user.initCooldowns(interaction.user.id);
 		}
 		toggleReminder(user, toggle);
 	    return interaction.reply(`Reminders for ${interaction.user.tag} is now set to \`${toggle}\`.`);
