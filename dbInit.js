@@ -15,18 +15,18 @@ const force = process.argv.includes('--force') || process.argv.includes('-f');
 
 sequelize.sync({ force }).then(async () => {
 	const commands = [
-		CommandList.upsert({ name: 'hunt', time: 1 }),
-		CommandList.upsert({ name: 'adventure adv', time: 60 }),
-		CommandList.upsert({ name: 'training tr ultraining ultr', time: 15 }),
-		CommandList.upsert({ name: 'working fish net boat bigboat chop axe bowsaw chainsaw mine pickaxe drill dynamite pickup ladder tractor greenhouse', time: 5 }),
-		CommandList.upsert({ name: 'farm', time: 10 }),
-		CommandList.upsert({ name: 'daily', time: 1440 }),
-		CommandList.upsert({ name: 'weekly', time: 10080 }),
-		CommandList.upsert({ name: 'duel', time: 120 }),
-		CommandList.upsert({ name: 'dungeon dung minintboss', time: 720 }),
-		CommandList.upsert({ name: '*buy ed lb', time: 180 }),
-		CommandList.upsert({ name: '*card hand', time: 1440 }),
-		CommandList.upsert({ name: '*horse breed', time: 1440 }),
+		CommandList.upsert({ name: 'hunt', time: 60 }),
+		CommandList.upsert({ name: 'adventure adv', time: 3600 }),
+		CommandList.upsert({ name: 'training tr ultraining ultr', time: 900 }),
+		CommandList.upsert({ name: 'working fish net boat bigboat chop axe bowsaw chainsaw mine pickaxe drill dynamite pickup ladder tractor greenhouse', time: 300 }),
+		CommandList.upsert({ name: 'farm', time: 600 }),
+		CommandList.upsert({ name: 'daily', time: 86400 }),
+		CommandList.upsert({ name: 'weekly', time: 604800 }),
+		CommandList.upsert({ name: 'duel', time: 7200 }),
+		CommandList.upsert({ name: 'dungeon dung minintboss', time: 43200 }),
+		CommandList.upsert({ name: '*buy ed lb', time: 10800 }),
+		CommandList.upsert({ name: '*card hand', time: 86400 }),
+		CommandList.upsert({ name: '*horse breed', time: 86400 }),
 		// quest, arena, vote
 	];
 

@@ -17,6 +17,8 @@ module.exports = {
 		if (!user) {
 			user = await Users.create({ user_id: interaction.user.id });
 			user.initCooldowns(interaction.user.id);
+			return interaction.reply(`Reminders for ${interaction.user.tag} is now set to \`${toggle}\`.\n` +
+									"It is recommended to run `rpg cd` to refresh your command cooldowns.")
 		}
 		toggleReminder(user, toggle);
 	    return interaction.reply(`Reminders for ${interaction.user.tag} is now set to \`${toggle}\`.`);

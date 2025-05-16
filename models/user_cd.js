@@ -2,9 +2,10 @@ module.exports = (sequelize, DataTypes) => {
 	return sequelize.define('user_cd', {
 		user_id: DataTypes.STRING,
 		command_id: DataTypes.INTEGER,
-		on_cooldown: {
+		ready_time: DataTypes.STRING,
+		has_timeout: {
 			type: DataTypes.BOOLEAN,
-			defaultValue: false,
+			defaultValue: false
 		}
 	}, {
 		timestamps: false,
