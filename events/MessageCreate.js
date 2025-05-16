@@ -9,7 +9,10 @@ module.exports = {
         if (id == 555955826880413696) { // rpg bot
             if (message.embeds.length > 0) {
                 const embed = message.embeds[0];
-                if (embed.data.author.name.includes('cooldowns')) {
+                try {
+                    var title = embed.data.author.name
+                } catch (error) {return;}
+                if (title.includes('cooldowns')) {
                     await ReadCooldowns(message);
                     return;
                 }
@@ -18,7 +21,7 @@ module.exports = {
 
         const user = await Users.findOne({ where: { user_id: id }});
         const messageArr = message.content.toLowerCase().split(" ");
-        if (!user || message.author.bot || messageArr[1] == 'i' || messageArr[1] == 'p') return;
+        if (!user || message.author.bot || messageArr[1] == 'i' || messageArr[1] == 'p' || messageArr[1] == 'rd') return;
 
         if (messageArr[0] == "rpg") {
             const { key, commandName } = await FindCommand(messageArr[1], message);
@@ -40,6 +43,8 @@ module.exports = {
 
 async function ReadCooldowns(message) {
     const user_id = message.embeds[0].data.author.icon_url.split("/")[4] // That's certainly one way of doing this lmao
+    const user = await Users.findOne({ where: { user_id: user_id } })
+    if (!user) return;
     for (field of message.embeds[0].data.fields) {
         var commandLines = field.value.split("\n");
         for (var commandLine of commandLines) {
@@ -70,11 +75,11 @@ async function ReadCooldowns(message) {
                     await userCd.setActiveTimeout(true);
                     userCd.createTimeout(message, user_id, commandName, time);
                 }
-                
+            } else { // Force ready command?
+                userCd.removeTimeout();
             }
         }
     }
-    console.log('finished reading cooldowns');
 }
 
 async function FindCommand(commandQuery, message) {

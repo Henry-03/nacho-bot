@@ -32,7 +32,8 @@ Reflect.defineProperty(Users.prototype, 'initCooldowns', {
 		for (const command of commandList) {
 			var userCd = await UserCds.create({ user_id: id, 
 												command_id: command.id, 
-												ready_time: (Date.now() - command.time * 60000).toString() });
+												ready_time: (Date.now() - command.time * 1000).toString(),
+												has_timeout: false });
 			await userCd.save();
 		}
 	},
@@ -42,20 +43,20 @@ let timeout;
 
 Reflect.defineProperty(UserCds.prototype, 'createTimeout', {
 	value: function(message, id, commandName, time) {
-			timeout = setTimeout(async () => {
+			timeout = setTimeout(() => {
 				message.channel.send(`<@${id}>, \`${commandName}\` is ready`);
 				this.setActiveTimeout(false);
-				await this.save();
 				timeout = null;
 			}, time * 1000) // Change to 1000 on release	
 	}
 });
 
 Reflect.defineProperty(UserCds.prototype, 'removeTimeout', {
-	value: () => {
+	value: function() {
 		if (timeout) {
 			clearTimeout(timeout)
 		};
+		this.setActiveTimeout(false);		
 		timeout = null;
 	}
 });
