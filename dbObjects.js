@@ -14,13 +14,13 @@ const UserCds = require('./models/user_cd.js')(sequelize, Sequelize.DataTypes);
 UserCds.belongsTo(Commands, { foreignKey: 'command_id', as: 'command'});
 
 Reflect.defineProperty(Users.prototype, 'toggleCooldown', {
-	value: async (id, command) => {
+	value: async (id, command, bool) => {
 		const userCd = await UserCds.findOne({
 			where: { user_id: id, command_id: command.id },
 		});
 
 		if (userCd) {
-			userCd.on_cooldown = !userCd.on_cooldown;
+			userCd.on_cooldown = bool;
 			return userCd.save();
 		}
 	},
