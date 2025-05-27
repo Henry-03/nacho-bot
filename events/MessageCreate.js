@@ -1,6 +1,7 @@
 const Op = require('sequelize');
 const { Events } = require('discord.js');
 const { Users, UserCds, Commands } = require('../dbObjects.js');
+const { CommandInteraction } = require('discord.js');
 
 module.exports = {
     name: Events.MessageCreate,
@@ -30,12 +31,8 @@ module.exports = {
             const command = await Commands.findOne({ where: { name: key }});
             const userCd = await UserCds.findOne({ where: { user_id: id, command_id: command.id } });
 
-            if (command && user.is_reminding) {
-                if ((Date.now() - userCd.ready_time) > command.time * 1000 && !userCd.has_timeout) {
-                    await user.setCooldown(id, command);
-                    await userCd.setActiveTimeout(true)
-                    userCd.createTimeout(message, id, commandName, command.time);     
-                }
+            if (user.is_reminding && userCd.timeout_id == 0) {
+                await userCd.createTimeout(message, id, commandName, command.time, false);     
             }
         }
     },
@@ -52,7 +49,7 @@ async function ReadCooldowns(message) {
             if (cooldownName.includes("|")) cooldownName = cooldownName.split(' |')[0];
             switch(cooldownName) { // Handling special commands
                 case "lootbox": cooldownName = 'buy ed lb'; break;
-                case "chop | fish | pickup | mine": cooldownName = 'working'; break;
+                case "chop": cooldownName = 'working'; break;
                 case "horse breeding": cooldownName = 'horse breed'; break;
                 default: break;
             }
@@ -61,22 +58,12 @@ async function ReadCooldowns(message) {
             const command = await Commands.findOne({ where: { name: key }});
             const userCd = await UserCds.findOne({ where: { user_id: user_id, command_id: command.id } });
             if (commandLine.includes('clock4')) {
-                // await userCd.removeTimeout();
-                const timeString = commandLine.split('**')[3].split(" ");
-                var time = 0;
-                for (var item of timeString) {
-                    if (item[item.length - 1] == 'h') {
-                        time = time * 24 + Number(item.substring(0, item.length - 1));
-                    } else {
-                        time = time * 60 + Number(item.substring(0, item.length - 1));
-                    }
-                }
-                if (!userCd.has_timeout) {
-                    await userCd.setActiveTimeout(true);
-                    userCd.createTimeout(message, user_id, commandName, time);
+                if (user.is_reminding) {
+                    const time = ReadTime(commandLine);
+                    await userCd.createTimeout(message, user_id, commandName, time, true);
                 }
             } else { // Force ready command?
-                userCd.removeTimeout();
+                if (userCd.timeout_id != 0) await userCd.removeTimeout(userCd.timeout_id);
             }
         }
     }
@@ -88,7 +75,8 @@ async function FindCommand(commandQuery, message) {
     var commandName = new String();
     for (const names of commandList) {
         if (names.name[0] != '*') {
-            if (names.name.indexOf(commandQuery) > -1) {
+            const nameList = names.name.split(" ");
+            if (nameList.includes(commandQuery)) {
                 key = names.name;
                 commandName = commandQuery;
                 break;
@@ -111,3 +99,17 @@ async function FindCommand(commandQuery, message) {
     }
     return { key, commandName };
 }
+
+function ReadTime(commandLine) {
+    const timeString = commandLine.split('**')[3].split(" ");
+        let time = 0;
+        for (let item of timeString) {
+            if (item[item.length - 1] == 'h') {
+                time = time * 24 + Number(item.substring(0, item.length - 1));
+            } else {
+                time = time * 60 + Number(item.substring(0, item.length - 1));
+            }
+        }
+        return time;
+}
+
